@@ -23,20 +23,7 @@ If you are using VS.code (recommended), you will also benefit from the following
 - [Debugger for Chrome](https://marketplace.visualstudio.com/items?itemName=msjsdiag.debugger-for-chrome)
 - [GraphQL](https://marketplace.visualstudio.com/items?itemName=Prisma.vscode-graphql)
 
-
-## Building a GraphQL Server
-
-### Bootstrapping an Node.js/Express/Apollo stack
-
-This setup bootstraps a basic Apollo Server stack with TypeScript. You will
-likely want to fine tune it for your preferences later.
-
-These instructions derive a basic setup from the following instructions:
-* [Get started with Apollo Server](https://www.apollographql.com/docs/apollo-server/getting-started/)
-* [eslint-config-standard-with-typescript](https://github.com/standard/eslint-config-standard-with-typescript)
-* [@sindresorhus/tsconfig](https://www.npmjs.com/package/@sindresorhus/tsconfig)
-
-### Initialise the server project
+### Initialise the Server Project
 
 ```sh
 # Initilise the stub project

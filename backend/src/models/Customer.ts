@@ -1,11 +1,11 @@
-import { Model, Table, Column, PrimaryKey, IsUUID } from 'sequelize-typescript'
+import { DataType, Model, Table, Column, PrimaryKey, IsUUID } from 'sequelize-typescript'
 
 @Table
-export class Customer extends Model<Customer> {
+export default class Customer extends Model<Customer> {
 
   @IsUUID(4)
   @PrimaryKey
-  @Column
+  @Column(DataType.UUID)
   id!: string
 
   @Column

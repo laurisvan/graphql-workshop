@@ -1,28 +1,28 @@
-import { Model, Table, Column, PrimaryKey, ForeignKey, IsUUID, IsDate } from 'sequelize-typescript'
-import { Customer } from './Customer'
-import { Person } from './Person'
+import { DataType, Model, Table, Column, PrimaryKey, ForeignKey, IsUUID, IsDate } from 'sequelize-typescript'
+import Customer from './Customer'
+import Person from './Person'
 
 @Table
-export class Assignment extends Model<Assignment> {
+export default class Assignment extends Model<Assignment> {
 
   @IsUUID(4)
   @PrimaryKey
-  @Column
+  @Column(DataType.UUID)
   id!: string;
 
   @IsUUID(4)
   @ForeignKey(() => Person)
-  @Column
+  @Column(DataType.UUID)
   assigneeId!: string;
 
   @IsUUID(4)
   @ForeignKey(() => Customer)
-  @Column
+  @Column(DataType.UUID)
   recipientId!: string;
 
   @IsUUID(4)
   @ForeignKey(() => Customer)
-  @Column
+  @Column(DataType.UUID)
   orderedById!: string;
 
   @IsDate

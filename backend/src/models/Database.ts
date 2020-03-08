@@ -1,13 +1,20 @@
-import {Sequelize} from 'sequelize-typescript'
+import { Sequelize } from 'sequelize-typescript'
+// TODO Remove these comments as we create the models
+// import Assignment from './Assignment'
+// import Customer from './Customer'
+// import Person from './Person'
 
 export default class Database {
   private sequelize: Sequelize
-  private static DEFAULT_CONNECTION_URL: string = 'postgres://user:secret@localhost:5432/graphql_workshop'
+  private static DEFAULT_CONNECTION_URL: string = 'postgres://localhost:5432/graphql_workshop'
   private static INSTANCE: Database
 
   private constructor() {
-    const url = process.env['DATABASE_CONNECTION_URL'] || Database.DEFAULT_CONNECTION_URL
-    this.sequelize = new Sequelize(url)
+    const url = process.env['DB_CONNECTION_URL'] || Database.DEFAULT_CONNECTION_URL
+    this.sequelize = new Sequelize(url, {
+      // TODO Remove these comments as we create the models
+      models: [ /*Assignment, Customer, Person */ ],
+    })
   }
 
   static get instance() {
