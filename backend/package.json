@@ -8,12 +8,18 @@
     "build": "tsc -b --incremental",
     "watch": "nodemon --watch build --watch schema.graphql",
     "start": "node .",
-    "build_watch": "tsc -b --watch"
+    "build_watch": "tsc -b --watch",
+    "generate_types": "graphql-codegen --config graphql-codegen.yml"
   },
   "keywords": [],
   "author": "",
   "license": "UNLICENSED",
   "devDependencies": {
+    "@graphql-codegen/cli": "^1.13.0",
+    "@graphql-codegen/typescript": "^1.13.0",
+    "@graphql-codegen/typescript-operations": "^1.13.0",
+    "@graphql-codegen/typescript-react-apollo": "^1.13.0",
+    "@graphql-codegen/typescript-resolvers": "^1.13.0",
     "@sindresorhus/tsconfig": "^0.7.0",
     "@typescript-eslint/eslint-plugin": "^2.22.0",
     "eslint": "^6.8.0",
@@ -25,6 +31,7 @@
     "nodemon": "^2.0.2"
   },
   "dependencies": {
+    "@graphql-modules/core": "^0.7.14",
     "@types/bluebird": "^3.5.30",
     "@types/node": "^13.9.0",
     "@types/validator": "^12.0.1",

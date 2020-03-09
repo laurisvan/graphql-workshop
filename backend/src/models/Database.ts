@@ -1,6 +1,6 @@
 import { Sequelize } from 'sequelize-typescript'
 // TODO Remove these comments as we create the models
-// import Assignment from './Assignment'
+import Assignment from './Assignment'
 // import Customer from './Customer'
 // import Person from './Person'
 
@@ -13,7 +13,7 @@ export default class Database {
     const url = process.env['DB_CONNECTION_URL'] || Database.DEFAULT_CONNECTION_URL
     this.sequelize = new Sequelize(url, {
       // TODO Remove these comments as we create the models
-      models: [ /*Assignment, Customer, Person */ ],
+      models: [ Assignment /*, Customer, Person */ ],
     })
   }
 
@@ -22,9 +22,8 @@ export default class Database {
   }
 
   async init() {
-    // Enforce sequelize initialization (force param drop existing tables)
-    await this.sequelize.sync({
-      force: true
-    })
+    // Enforce sequelize initialization
+    // Call sync({ force: true }) if you permit dropping and re-creating tables
+    await this.sequelize.sync()
   }
 }

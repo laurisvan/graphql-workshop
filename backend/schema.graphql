@@ -1,4 +1,18 @@
+scalar Date
+
+type Assignment {
+  id: ID
+
+  assigneeId: ID
+  brokerId: ID
+  recipientId: ID
+
+  starts: Date
+  ends: Date  
+}
+
 # All Queries (e.g. not nested resolvers)
 type Query {
   hello: String
+  assignments: [Assignment!]!
 }

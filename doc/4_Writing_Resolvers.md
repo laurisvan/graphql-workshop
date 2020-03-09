@@ -1,27 +1,20 @@
 # Writing Resolvers
 
-This section refines the basic bootstrap to a full API.
+This section refines the basic bootstrap to a full API:
+1. Create the Data Models using [sequelize-typescript](https://www.npmjs.com/package/sequelize-typescript)
+1. Create TypeScript typings from schma using [GraphQL Code Generator](https://graphql-code-generator.com/)
+1. Bind them together using [GraphQL Modules](https://graphql-modules.com/)
 
-In this workshop data models are created using Sequelize for simplicity, but
-raw SQL, knex/Objection.js or anything that can produce raw POJOs would
-suffice for GraphQL resolvers. The variant we use `sequelize-typescript`,
-heavily utilises TypeScript decorators, which we mainly use to ease the setup.
+We apply "specification first" approach here, e.g. define the GraphQL schema first
+as it eases generating shared TypeScript definitions for frontend and backend. If
+you prefer "code first" approach you can use e.g.
+[TypeGraphQL](https://typegraphql.ml/), but we do not cover it here.
 
-We also `TypeGraphQL` to generate some of the resolvers. In principle, it
-could replace the whole GraphQL SDL (e.g. graphql.schema), but I have found
-a "specification first" approach work better.
+## Define Database & Data Models
 
-## Setup
+### Database
 
-```sh
-# Sequelize dependencies
-npm install --save sequelize @types/bluebird @types/node @types/validator reflect-metadata sequelize-typescript
-
-# Postgres dependencies
-npm install --save pg pg-hstore
-
-# TypeGraphQL dependencies
-npm install --save type-graphql
+Create the database as follows:
 
 ```sh
 # Change these if you are using anything else than the default postgres setup
@@ -29,6 +22,8 @@ npm install --save type-graphql
 psql -d postgres -c "CREATE DATABASE graphql_workshop"
 export DB_CONNECTION_URL=postgres://localhost:5432/graphql_workshop
 ```
+
+### Database Wrapper
 
 Define the following DB wrapper into `src/models/Database.ts`:
 
@@ -57,10 +52,9 @@ export default class Database {
   }
 
   async init() {
-    // Enforce sequelize initialization (force param drop existing tables)
-    await this.sequelize.sync({
-      force: true
-    })
+    // Enforce sequelize initialization
+    // Call sync({ force: true }) if you permit dropping and re-creating tables
+    await this.sequelize.sync()
   }
 }
 ```
@@ -80,7 +74,7 @@ async function start() {
 }
 ```
 
-## Data Models
+### Data Models
 
 Consider the following (simplified) domain model:
 
@@ -176,25 +170,95 @@ export default class Person extends Model<Person> {
 }
 ```
 
+## Define Resolvers
+
+### Define Modules
+
+While all resolvers could be written into a single resolvers file, they are
+easier to manage when modularised. There are many ways to modules, but in
+this workshop we use GraphQL Modules package, which helps to separate
+type definitions their related resolvers as modules.
+
+Note: While GraphQL Modules supports nesting GraphQL Schemas in modules, we
+stick to the shared schema.graphql until there is a real need to split (this 
+happens rarely). However, the different resolvers and queries grow fast, hence
+we start by splitting them from the very beginning.
+
+Append a root level GraphQL module definition directly into `src/index.ts`:
+
+```typescript
+import fs from 'fs'
+import path from 'path'
+import { ApolloServer, gql } from 'apollo-server'
+import { GraphQLModule } from '@graphql-modules/core';
+import Database from './models/Database'
+import AssignmentModule from './modules/AssignmentModule'
+
+// Load schema from an external file (relative to build directory).
+const schema = fs.readFileSync(path.join(__dirname, '..', 'schema.graphql'))
+const typeDefs = gql`${schema}`
+
+async function start() {
+  // Initialize database
+  const db = Database.instance
+  await db.init()
+
+  // Define the root module wrapper to split resolvers.
+  // Note: Contrary to the normal setup we do not modularise schema definitions
+  const root = new GraphQLModule({
+    typeDefs,
+    // Add these when the corresponding modules have been written
+    imports: [ AssignmentModule ]
+  })
+
+  // Start the server
+  const server = new ApolloServer({
+    modules: [root],
+    context: session => session
+  })
+  const { url } = await server.listen()
+  console.log(`🚀 Server ready at ${url}`)
+}
+
+start()
+```
+
+
+Define Assignment module `src/modules/assignment/index.ts` as follows:
+
+```typescript
+import { GraphQLModule } from '@graphql-modules/core'
+import { IResolvers, IAssignment } from '../interfaces/schemaTypings'
+import Assignment from '../models/Assignment'
+
+const resolvers: IResolvers = {
+  Query: {
+    assignments: async (): Promise<IAssignment[]> => {
+      return Assignment.findAll()
+    }
+  }
+}
+
+export default new GraphQLModule({
+  resolvers
+})
+```
+
+Note that `IAssignment` here is the TypeScripted GraphQL type definition,
+whereas `Assignment` comes from the module. They magically fit together as
+the interface is a subset of the class definition.
+
+Add sample data to the database, and watch the first resolvers to be loaded!
+
 ### Nested resolvers
 
 ### Custom Types (JSON, UUID etc.)
 
 ### Data Loaders (Solving the N+1 Problem & Caching)
 
-## Building a GraphQL Client
-
-### Querying for data
-
-### Mutating data
-
-### Using Fragments (for recurring fetch patterns)
-
-## Supplementary Topics
-
-### Generating Types from Schema
-
 ## References
+
 - [sequelize-typescript](https://github.com/RobinBuschmann/sequelize-typescript)
-- []
-* (TypeGraphQL - define GraphQL types with annotations)[https://typegraphql.ml/]
+- [GraphQL Code Generator](https://graphql-code-generator.com/)
+- [GraphQL Modules](https://graphql-modules.com/)
+- [TypeGraphQL - define GraphQL types with annotations](https://typegraphql.ml/)
