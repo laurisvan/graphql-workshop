@@ -1,4 +1,6 @@
-# Bootstrap your stack
+# Bootstrap Your Stack
+
+This chapter bootstraps a simple Node.js/TypeScript/Apollo server stack.
 
 ### Initialise the Backend and Tooling Dependencies
 
@@ -61,3 +63,13 @@ jq -r '.scripts.start = "node ."' package.json | sponge package.json
 jq -r '.scripts.watch = "nodemon --watch build --watch schema.graphql"' package.json | sponge package.json
 jq -r '.scripts.build = "tsc -b --incremental"' package.json | sponge package.json
 jq -r '.scripts.build_watch = "tsc -b --watch"' package.json | sponge package.json
+```
+
+## References
+
+* [eslint-config-standard-with-typescript](https://github.com/standard/eslint-config-standard-with-typescript)
+
+## Navigation
+
+* [Previous Chapter](1_Simple_GraphQL_Queries.md)
+* [Next Chapter](3_Simple_Backend.md)

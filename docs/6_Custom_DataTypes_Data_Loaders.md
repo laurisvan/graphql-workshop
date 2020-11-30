@@ -1,9 +1,13 @@
-# Bootstrap a React / Apollo Client App
+# Custom DataTypes, Data Loaders and Oh My!
 
-## Building a GraphQL Client
+This chapter refines your GraphQL knowledge to custom data types, Data Loaders and other topics
+that are beyond basics but that everybody needs.
+### Nested resolvers
 
-## Querying for data
+### Custom Types (JSON, UUID etc.)
 
-## Mutating data
+### Data Loaders (Solving the N+1 Problem & Caching)
+## Navigation
 
-## Using Fragments (for recurring fetch patterns)
+* [Previous Chapter](5_Bootstrap_Frontend.md)
+* [Next Chapter](7_Authentication_and_Access_Control.md)

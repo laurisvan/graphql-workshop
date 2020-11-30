@@ -1,6 +1,6 @@
-# Bootstrap a Node.js/TypeScript/Apollo Server stack
+# A Simple Backend
 
-This section helps to bootstrap a a basic Apollo Server stack that uses
+This chapter helps to bootstrap a a basic Apollo Server stack that uses
 TypeScript. You will likely want to fine tune it for your preferences later.
 
 ### Create a Minimal Server and Schema
@@ -66,6 +66,9 @@ open http://localhost:4000
 
 ## References
 
-* [Get started with Apollo Server](https://www.apollographql.com/docs/apollo-server/getting-started/)
-* [eslint-config-standard-with-typescript](https://github.com/standard/eslint-config-standard-with-typescript)
-* [@sindresorhus/tsconfig](https://www.npmjs.com/package/@sindresorhus/tsconfig)
+* [Get started with Apollo Server](https://www.apollographql.com/apollo-server/getting-started/)
+
+## Navigation
+
+* [Previous Chapter](2_Bootstrap.md)
+* [Next Chapter](4_Refined_Backend.md)

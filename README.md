@@ -11,6 +11,7 @@ As a part of this workshop, we will
 1. Write a simple React frontendto connect to the backend
 1. Add custom datatypes and write faster resolvers using Data Loaders
 1. Add JWT based authentication & role based access control
+1. Give some pointers for your further studies
 
 ## Prerequisities
 
@@ -39,3 +40,4 @@ If you are using VS.code (recommended), you will also benefit from the following
 - [Debugger for Chrome](https://marketplace.visualstudio.com/items?itemName=msjsdiag.debugger-for-chrome)
 - [GraphQL](https://marketplace.visualstudio.com/items?itemName=Prisma.vscode-graphql)
 
+When you are ready, let's move to the [Chapter 1: Simple GraphQL Queries](docs/1_Simple_GraphQL_Queries.md)!

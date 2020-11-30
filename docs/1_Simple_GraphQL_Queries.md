@@ -1,6 +1,6 @@
-# Writing GraphQL Queries
+# Simple GraphQL Queries
 
-This sections introduces you to querying GraphQL APIs through a few popular APIs.
+This chapter introduces you to querying GraphQL APIs through a few popular APIs.
 
 ## Basic Queries
 
@@ -53,3 +53,8 @@ query {
 
 * [GitHub API docs](https://docs.github.com/en/free-pro-team@latest/graphql/guides/using-the-explorer)
 * [GitHub token settings](https://github.com/settings/tokens)
+
+## Navigation
+
+* [Index](../README.md)
+* [Next Chapter](2_Bootstrap.md)

@@ -1,6 +1,6 @@
-# Writing Resolvers
+# Writing a Refined Backend
 
-This section refines the basic bootstrap to a full API:
+This chapter refines the basic bootstrap to a full API:
 1. Create the Data Models using [sequelize-typescript](https://www.npmjs.com/package/sequelize-typescript)
 1. Create TypeScript typings from schma using [GraphQL Code Generator](https://graphql-code-generator.com/)
 1. Bind them together using [GraphQL Modules](https://graphql-modules.com/)
@@ -282,3 +282,8 @@ Add sample data to the database, and watch the first resolvers to be loaded!
 - [GraphQL Code Generator](https://graphql-code-generator.com/)
 - [GraphQL Modules](https://graphql-modules.com/)
 - [TypeGraphQL - define GraphQL types with annotations](https://typegraphql.ml/)
+
+## Navigation
+
+* [Previous Chapter](3_Simple_Backend.md)
+* [Next Chapter](5_Bootstrap_Frontend.md)
