@@ -9,14 +9,16 @@ Then create a basic "Hello world, in GraphQL" app:
 
 ```sh
 mkdir src
-cat <<EOF >>src/index.ts
+
+# Note: $ and ` strings are escaped with \
+cat <<EOF >src/index.ts
 import fs from 'fs'
 import path from 'path'
 import { ApolloServer, gql } from 'apollo-server'
 
 // Load schema from an external file (relative to build directory).
 const schema = fs.readFileSync(path.join(__dirname, '..', 'schema.graphql'))
-const typeDefs = gql`${schema}`
+const typeDefs = gql\`\${schema}\`
 
 // Define resolvers to load
 const resolvers = {
@@ -29,7 +31,7 @@ async function start() {
   // Start the server
   const server = new ApolloServer({ typeDefs, resolvers })
   const { url } = await server.listen()
-  console.log(`🚀 Server ready at ${url}`)
+  console.log(\`🚀 Server ready at \${url}\`)
 }
 
 start()
@@ -39,7 +41,7 @@ EOF
 Create a Schema it refers to:
 
 ```sh
-cat <<EOF >>schema.graphql
+cat <<EOF >schema.graphql
 # All Queries (e.g. not nested resolvers)
 type Query {
   hello: String
@@ -50,11 +52,12 @@ EOF
 ## Run the Server
 
 The stack is now ready for running. Start the each on different shells:
+
 ```sh
 # Rebuild on file changes (*.ts)
 npm run build_watch
 
-# Restart server on schema or build changes
+# Restart server on schema or build changes in a different shell
 npm run watch
 
 # Now the backend is responding on port 4000; also serves GraphLQ Playground

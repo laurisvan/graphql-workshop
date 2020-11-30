@@ -5,10 +5,9 @@ This section refines the basic bootstrap to a full API:
 1. Create TypeScript typings from schma using [GraphQL Code Generator](https://graphql-code-generator.com/)
 1. Bind them together using [GraphQL Modules](https://graphql-modules.com/)
 
-We apply "specification first" approach here, e.g. define the GraphQL schema first
-as it eases generating shared TypeScript definitions for frontend and backend. If
-you prefer "code first" approach you can use e.g.
-[TypeGraphQL](https://typegraphql.ml/), but we do not cover it here.
+We apply "specification first" approach here, e.g. define the GraphQL schema first as it eases
+generating shared TypeScript definitions for frontend and backend. If you prefer "code first"
+approach you can use e.g. [TypeGraphQL](https://typegraphql.ml/), but we do not cover it here.
 
 ## Define Database & Data Models
 
@@ -97,7 +96,6 @@ classDiagram
   }
 ```
 
-
 Define the following classes in `src/models/` as `Assignment.ts`, `Customer.ts`, `Person.ts`:
 
 ```typescript
@@ -171,18 +169,48 @@ export default class Person extends Model<Person> {
 ```
 
 ## Define Resolvers
+### Bootstrap GraphQL Codegen
+
+GraphQL CodeGen allows typings definitions from schema files and can be used for both frontend and backend.
+
+```sh
+# GraphQL Code Generator dependencies for "specification first" approach
+npm install --save-dev @graphql-codegen/cli @graphql-codegen/typescript \
+  @graphql-codegen/typescript-operations @graphql-codegen/typescript-resolvers \
+  @graphql-codegen/typescript-react-apollo
+jq -r '.scripts.generate_types = "graphql-codegen --config graphql-codegen.yml"' \
+  package.json | sponge package.json
+
+cat <<EOF >./graphql-codegen.yml
+overwrite: true
+schema: ./schema.graphql
+config:
+  # We add the interface prefix to types to avoid name clashes
+  typesPrefix: I
+generates:
+  # Frontend typings
+  ../frontend/src/lib/GraphQLTypings.tsx:
+    plugins:
+      - 'typescript'
+      - 'typescript-operations'
+      - 'typescript-react-apollo'
+  # Common schema typings
+  ../backend/src/interfaces/schemaTypings.ts:
+    plugins:
+      - 'typescript'
+      - 'typescript-resolvers'
+EOF
+```
 
 ### Define Modules
 
-While all resolvers could be written into a single resolvers file, they are
-easier to manage when modularised. There are many ways to modules, but in
-this workshop we use GraphQL Modules package, which helps to separate
-type definitions their related resolvers as modules.
+While all resolvers could be written into a single resolvers file, they are easier to manage when
+modularised. There are many ways to modules, but in this workshop we use GraphQL Modules package,
+which helps to separate type definitions their related resolvers as modules.
 
-Note: While GraphQL Modules supports nesting GraphQL Schemas in modules, we
-stick to the shared schema.graphql until there is a real need to split (this 
-happens rarely). However, the different resolvers and queries grow fast, hence
-we start by splitting them from the very beginning.
+Note: While GraphQL Modules supports nesting GraphQL Schemas in modules, we stick to the shared
+schema.graphql until there is a real need to split (this happens rarely). However, the different
+resolvers and queries grow fast, hence we start by splitting them from the very beginning.
 
 Append a root level GraphQL module definition directly into `src/index.ts`:
 
@@ -223,7 +251,6 @@ async function start() {
 start()
 ```
 
-
 Define Assignment module `src/modules/assignment/index.ts` as follows:
 
 ```typescript
@@ -244,17 +271,10 @@ export default new GraphQLModule({
 })
 ```
 
-Note that `IAssignment` here is the TypeScripted GraphQL type definition,
-whereas `Assignment` comes from the module. They magically fit together as
-the interface is a subset of the class definition.
+Note that `IAssignment` here is the TypeScripted GraphQL type definition, whereas `Assignment`
+comes from the module. They magically fit together as the interface is a subset of the class definition.
 
 Add sample data to the database, and watch the first resolvers to be loaded!
-
-### Nested resolvers
-
-### Custom Types (JSON, UUID etc.)
-
-### Data Loaders (Solving the N+1 Problem & Caching)
 
 ## References
 

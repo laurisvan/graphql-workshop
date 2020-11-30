@@ -25,7 +25,7 @@ query {
         url
       }
     }
-  }  
+  }
 }
 ```
 
@@ -51,5 +51,5 @@ query {
 
 ## References
 
-* [GitHub API docs](https://developer.github.com/v4/guides/using-the-explorer/)
+* [GitHub API docs](https://docs.github.com/en/free-pro-team@latest/graphql/guides/using-the-explorer)
 * [GitHub token settings](https://github.com/settings/tokens)
