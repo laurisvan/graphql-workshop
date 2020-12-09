@@ -31,6 +31,8 @@ Quick'n'dirty setup on OS/X / Homebrew:
 ```sh
 brew cask install insomnia
 brew install nodejs
+# Alternative for node.js
+brew install nvm ; nvm use 14
 brew install postgres
 brew cask install postico
 brew install jq moreutils

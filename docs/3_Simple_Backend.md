@@ -24,7 +24,7 @@ const typeDefs = gql\`\${schema}\`
 const resolvers = {
   Query: {
     hello: () => 'Hello, world!'
-  },
+  }
 }
 
 async function start() {
@@ -34,6 +34,7 @@ async function start() {
   console.log(\`🚀 Server ready at \${url}\`)
 }
 
+// eslint-disable-next-line @typescript-eslint/no-floating-promises
 start()
 EOF
 ```
@@ -46,6 +47,7 @@ cat <<EOF >schema.graphql
 type Query {
   hello: String
 }
+
 EOF
 ```
 
@@ -60,7 +62,7 @@ npm run build_watch
 # Restart server on schema or build changes in a different shell
 npm run watch
 
-# Now the backend is responding on port 4000; also serves GraphLQ Playground
+# Now the backend is responding on port 4000; also serves GraphQL Playground
 open http://localhost:4000
 ```
 
