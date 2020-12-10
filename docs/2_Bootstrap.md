@@ -75,6 +75,7 @@ jq -r '.scripts.build_watch = "tsc -b --watch"' package.json | sponge package.js
 
 ## References
 
+* [Prisma.io GraphQL Tutorial (includes bootstrapping React App)](https://www.prisma.io/blog/how-to-use-create-react-app-with-graphql-apollo-62e574617cff)
 * [eslint-config-standard-with-typescript](https://github.com/standard/eslint-config-standard-with-typescript)
 
 ## Navigation

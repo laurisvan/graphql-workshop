@@ -62,25 +62,18 @@ the type definitions here.
 # GraphQL Code Generator dependencies for "specification first" approach
 npm install --save-dev @graphql-codegen/cli @graphql-codegen/typescript \
   @graphql-codegen/typescript-operations @graphql-codegen/typescript-resolvers \
-  @graphql-codegen/typescript-react-apollo
+  @graphql-codegen/typescript-react-apollo @graphql-codegen/near-operation-file-preset
 jq -r '.scripts.generate_types = "graphql-codegen --config graphql-codegen.yml"' \
   package.json | sponge package.json
 
 cat <<EOF >./graphql-codegen.yml
 overwrite: true
-# We will iterate any GraphQL type definitions in our modules directory
 schema: ./src/modules/**/*.graphql
 config:
   # We add the interface prefix to types to avoid name clashes
   typesPrefix: I
 generates:
-  # Frontend typings
-  ../frontend/src/lib/GraphQLTypings.tsx:
-    plugins:
-      - 'typescript'
-      - 'typescript-operations'
-      - 'typescript-react-apollo'
-  # Common schema typings
+  # Backend typings
   ../backend/src/interfaces/schema-typings.ts:
     plugins:
       - 'typescript'
@@ -89,7 +82,7 @@ generates:
 EOF
 ```
 
-Now that graphql-codegen is setup, we can try generating the typings:
+Now that graphql-codegen is set, we can try generating the typings:
 
 ```sh
 npm run generate_types
