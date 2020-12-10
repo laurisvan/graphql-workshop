@@ -64,15 +64,11 @@ schema: ./src/modules/**/*.graphql
 config:
   # We add the interface prefix to types to avoid name clashes
   typesPrefix: I
+  scalars:
+    DateTime: Date
 generates:
   # Frontend typings (uncomment these later)
   ../frontend/src/interfaces/schema-typings.ts:
-    # near-operation-file preset generates the code adjacent to the graphql
-    # documents. The documents specify the actual GraphQL queries.
-    preset: near-operation-file
-    presetConfig:
-      extension: .generated.ts
-      baseTypesPath: .
     documents: ../frontend/src/**/*.graphql
     plugins:
       - 'typescript'
@@ -126,8 +122,7 @@ Now we can create `src/components/AssignmentList/index.tsx`:
 ```typescript
 import React from 'react'
 // Note how we can use the generated query and types directly
-import { useAssignmentsQuery, AssignmentsDocument } from './operations.generated'
-import { useQuery, gql } from '@apollo/client'
+import { useAssignmentsQuery } from '../../interfaces/schema-typings'
 
 const AssignmentList = () => {
   // Note: This is a typed wrapper to Apollo useQuery() method

@@ -29,8 +29,8 @@ You can browse this in schema browsers
 TODO Add definitions for starts and ends when we add custom data types
 """
 type Assignment {
-  # A single-line comment
-  name: String
+  # A single-line comment (note that ! denotes non-nullable value)
+  name: String!
   """
   Multi-line comments are supported here, as well
   """
@@ -62,7 +62,8 @@ the type definitions here.
 # GraphQL Code Generator dependencies for "specification first" approach
 npm install --save-dev @graphql-codegen/cli @graphql-codegen/typescript \
   @graphql-codegen/typescript-operations @graphql-codegen/typescript-resolvers \
-  @graphql-codegen/typescript-react-apollo @graphql-codegen/near-operation-file-preset
+  @graphql-codegen/typescript-react-apollo @graphql-codegen/near-operation-file-preset \
+  @graphql-codegen/introspection
 jq -r '.scripts.generate_types = "graphql-codegen --config graphql-codegen.yml"' \
   package.json | sponge package.json
 
@@ -125,29 +126,30 @@ import { createModule, gql } from 'graphql-modules'
 // These are types injected from the generated schema types
 import { IResolvers, IAssignment } from '../../interfaces/schema-typings'
 
+import AssignmentProvider from './provider'
+
 const data = fs.readFileSync(path.join(__dirname, 'schema.graphql'))
 const typeDefs = gql(data.toString())
 
 const resolvers: IResolvers = {
   Query: {
-    assignments: async (): Promise<IAssignment[]> => {
-      // TODO Replace this with real query results
-      return [{
-        name: 'My marvellous task',
-        description: 'Write the workshop tutorial'
-      }]
+    assignments: async (parent, args, context, info): Promise<IAssignment[]> => {
+      const provider = context.injector.get(AssignmentProvider)
+
+      return provider.find()
     }
   }
 }
 
-export const Assignment = createModule({
+export const AssignmentModule = createModule({
   id: 'assignments',
   dirname: __dirname,
   typeDefs: typeDefs,
-  resolvers
+  resolvers,
+  providers: [AssignmentProvider]
 })
 
-export default Assignment
+export default AssignmentModule
 
 ```
 
