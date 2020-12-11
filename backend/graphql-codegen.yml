@@ -1,0 +1,28 @@
+overwrite: true
+schema: ./src/modules/**/*.graphql
+config:
+  # We add the interface prefix to types to avoid name clashes
+  typesPrefix: I
+  scalars:
+    DateTime: Date
+generates:
+  # Frontend typings (uncomment these later)
+  ../frontend/src/interfaces/schema-typings.ts:
+    documents: ../frontend/src/**/*.graphql
+    plugins:
+      - 'typescript'
+      - 'typescript-operations'
+      - 'typescript-react-apollo'
+  # apollo-link-scalars needs this to serialise/deserialise types properly
+  # this file may grow and might not always be a good idea.
+  ../frontend/src/interfaces/introspection.json:
+    plugins:
+      - introspection
+    config:
+      minify: true
+  # Backend typings
+  ../backend/src/interfaces/schema-typings.ts:
+    plugins:
+      - 'typescript'
+      - 'typescript-resolvers'
+

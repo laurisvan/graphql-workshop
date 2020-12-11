@@ -1,0 +1,8 @@
+query assignments {
+  assignments {
+    name
+    description
+    starts
+    ends
+  }
+}

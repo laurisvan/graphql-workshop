@@ -1,0 +1,32 @@
+"""
+This is a sample GraphQL multi-line comment. GraphQL supports simple API
+documentation as part of the schema definition. This is actually enough for
+all needs I have encountered this far.
+
+You can browse this in schema browsers
+
+TODO Add definitions for starts and ends when we add custom data types
+"""
+type Assignment {
+  id: ID!
+  recipientId: ID
+
+  # A single-line comment
+  name: String!
+  """
+  Multi-line comments are supported here, as well
+  """
+  description: String
+  starts: DateTime!
+  ends: DateTime!
+}
+
+"""
+In GraphQL, inputs are special types to encapsulate complex inputs
+"""
+input AssignmentInput {
+  name: String!
+  description: String
+  starts: DateTime!
+  ends: DateTime!
+}

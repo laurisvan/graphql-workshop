@@ -1,0 +1,11 @@
+type Query {
+  assignments: [Assignment!]!
+  customers: [Customer!]!
+  persons: [Person!]!
+}
+
+type Mutation {
+  createAssignment(input: AssignmentInput): Assignment!
+  createCustomer(input: CustomerInput): Customer!
+  createPerson(input: PersonInput): Person!
+}

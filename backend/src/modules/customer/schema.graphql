@@ -1,0 +1,14 @@
+type Customer {
+  id: ID!
+  name: String!
+}
+
+input CustomerInput {
+  name: String!
+  description: String
+}
+
+### We can augment the existing types from other modules
+extend type Assignment {
+  recipient: Customer
+}
