@@ -11,6 +11,11 @@ solutions, e.g. JWT based authentication and role based access control.
 
 ### Adding Authentication to the Frontend
 
+## References
+
+- [AAC implementation in GraphQL Modules](https://medium.com/the-guild/authentication-and-authorization-in-graphql-and-how-graphql-modules-can-help-fadc1ee5b0c2)
+- [AAC implementation in GraphQL Modules](https://medium.com/the-guild/authentication-and-authorization-in-graphql-and-how-graphql-modules-can-help-fadc1ee5b0c2)
+
 ## Navigation
 
 * [Previous Chapter](6_Custom_DataTypes_Data_Loaders.md)

@@ -274,12 +274,13 @@ sed -i '' 's/assignment/customer/g' src/modules/customer/*
 sed -i '' 's/Assignment/Customer/g' src/modules/customer/*
 
 cp -R src/modules/assignment src/modules/person
-sed -i '' 's/assignment/person/' src/modules/person/*
-sed -i '' 's/Assignment/Person/' src/modules/person/*
+sed -i '' 's/assignment/person/g' src/modules/person/*
+sed -i '' 's/Assignment/Person/g' src/modules/person/*
 ```
 
 You may want to cleanup the schema definitions for obsolete values (Customers
-and Persons do not have `starts`, `ends` or `description`)
+and Persons just need a `name`). You might want to create the queries and 
+mutations for them, too.
 
 Then add the new modules into `src/index.ts`:
 
@@ -316,6 +317,55 @@ Now generate types and find the new APIs in your API client and watch your API e
 npm run generate_types
 ```
 
+### Type Resolvers, Data Loaders and Solving the N+1 Problem
+
+Now that we have more modules, we have the opportunity to do 'joins' via GraphQL.
+We can expand the Persons and Customers from within assignments directly, writing
+the corresponding resolver to Assignment. However, a naive implementation will
+result in N+1 queries (1 to find the Assignments, and N queries for each Person).
+
+The solution for this is DataLoader, which practically waits one tick in Node.js
+event loop, queues the queries and redistributes the results back for each caller.
+
+Install the DataLoader dependency
+
+```sh
+npm install --save dataloader
+```
+
+To resolve Customer from within Assignment, you can first write a DataLoader to
+Customer (`src/modules/customer/provider.ts`):
+
+```typescript
+
+...
+export class CustomerProvider {
+  private readonly loader = new DataLoader<string, Customer | undefined>(
+    async (ids: readonly string[]): Promise<Array<Customer | undefined>> => {
+      const rows = await Customer.findAll({
+        where: {
+          // Note: We do the array trick just because Sequelize API is mutable
+          // and DataLoader isn't.
+          id: [...ids]
+        }
+      })
+
+      return ids.map(id => rows.find(c => c.id === id))
+    },
+    { cache: false }
+  )
+
+  async findById (id: string): Promise<Customer | undefined> {
+    if (!id) {
+      return undefined
+    }
+
+    return await this.loader.load(id)
+  }
+
+...
+```
+
 ## References
 
 - [GraphQL Types](https://www.apollographql.com/docs/react/get-started/)
@@ -323,6 +373,8 @@ npm run generate_types
 - [GraphQL Code Generator, React App Plugin](https://graphql-code-generator.com/docs/plugins/typescript-react-apollo)
 - [Composable Networking with Apollo Link](https://www.apollographql.com/docs/link/)
 - [Apollo Link Scalars](https://github.com/eturino/apollo-link-scalars)
+- [Solving N+1 Problem with GraphQL Modules](https://graphql-modules.com/docs/recipes/data-loader)
+
 ## Navigation
 
 * [Previous Chapter](5_Bootstrap_Frontend.md)
