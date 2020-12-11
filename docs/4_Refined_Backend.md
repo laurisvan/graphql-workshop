@@ -228,11 +228,6 @@ import Customer from './Customer'
 import Person from './Person'
 
 @Table
-import { DataType, Model, Table, Column, PrimaryKey, ForeignKey, IsUUID, IsDate } from 'sequelize-typescript'
-import Customer from './Customer'
-import Person from './Person'
-
-@Table
 export default class Assignment extends Model {
   @IsUUID(4)
   @PrimaryKey

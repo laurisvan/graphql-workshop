@@ -5,20 +5,16 @@ TypeScript. You will likely want to fine tune it for your preferences later.
 
 ### Create a Minimal Server and Schema
 
-Then create a basic "Hello world, in GraphQL" app:
+Then create a basic "Hello world, in GraphQL" app at `src/index.ts`:
 
-```sh
-mkdir src
-
-# Note: $ and ` strings are escaped with \
-cat <<EOF >src/index.ts
+```
 import fs from 'fs'
 import path from 'path'
 import { ApolloServer, gql } from 'apollo-server'
 
 // Load schema from an external file (relative to build directory).
 const schema = fs.readFileSync(path.join(__dirname, '..', 'schema.graphql'))
-const typeDefs = gql\`\${schema}\`
+const typeDefs = gql`${schema}`
 
 // Define resolvers to load
 const resolvers = {
@@ -27,20 +23,19 @@ const resolvers = {
   },
 
   Mutation: {
-    echo: (parent, params, context, info) => `You typed ${ params.input }`
+    echo: (parent: any, { input }: { input: string }) => `You typed ${input}`
   }
 }
 
-async function start() {
+async function start (): Promise<void> {
   // Start the server
   const server = new ApolloServer({ typeDefs, resolvers })
   const { url } = await server.listen()
-  console.log(\`🚀 Server ready at \${url}\`)
+  console.log(`🚀 Server ready at ${url}`)
 }
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 start()
-EOF
 ```
 
 Create a Schema it refers to:
