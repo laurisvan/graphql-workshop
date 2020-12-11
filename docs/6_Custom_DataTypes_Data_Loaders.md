@@ -258,9 +258,63 @@ npm run generate_types
 
 ... and finally you can use custom types accross the stack!
 
-### Data Loaders (Solving the N+1 Problem & Caching)
+### More Modules
 
+Until now we have only worked with Assignments module but have not related it
+to Persons and Customers. Now we can finally show the true power of GraphQL,
+e.g. give clients the power to retrieve what they want to retrieve, and when.
 
+First we need to create the stub modules to Person and Customer. The current
+API is so simple that you can just copy the `assignment` module as a template,
+and substitute `assignment` with `customer` and `Assignment` with `Customer`
+
+```sh
+cp -R src/modules/assignment src/modules/customer
+sed -i '' 's/assignment/customer/g' src/modules/customer/*
+sed -i '' 's/Assignment/Customer/g' src/modules/customer/*
+
+cp -R src/modules/assignment src/modules/person
+sed -i '' 's/assignment/person/' src/modules/person/*
+sed -i '' 's/Assignment/Person/' src/modules/person/*
+```
+
+You may want to cleanup the schema definitions for obsolete values (Customers
+and Persons do not have `starts`, `ends` or `description`)
+
+Then add the new modules into `src/index.ts`:
+
+```typescript
+import { ApolloServer } from 'apollo-server'
+import { createApplication } from 'graphql-modules'
+import AssignmentModule from './modules/assignment'
+import CommonModule from './modules/common'
+import CustomerModule from './modules/customer'
+import OperationsModule from './modules/operations'
+import PersonModule from './modules/person'
+
+import Database from './models/Database'
+
+async function start (): Promise<void> {
+  // Initialize GraphQL modules
+  const application = createApplication({
+    modules: [
+      AssignmentModule,
+      CustomerModule,
+      CommonModule,
+      OperationsModule,
+      PersonModule
+    ]
+  })
+
+...
+
+```
+
+Now generate types and find the new APIs in your API client and watch your API expand!
+
+```
+npm run generate_types
+```
 
 ## References
 

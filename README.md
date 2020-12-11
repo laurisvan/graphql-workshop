@@ -25,7 +25,7 @@ This workshop will use the following tools:
 - [Postgres (any version)](https://www.postgresql.org/download/)
 - [Postico](https://eggerapps.at/postico/) or another Postgres database client
 - [JQ for CLI JSON manipulation](https://stedolan.github.io/jq/download/) for JSON manipulation - used in a few scripts
-- [Sponge from moreutils for CLI JSON manipulation](https://stedolan.github.io/jq/download/) for JSON manipulation - used in a few scripts
+- [Sponge from moreutils for CLI JSON manipulation](https://joeyh.name/code/moreutils/) for JSON manipulation - used in a few scripts
 
 Quick'n'dirty setup on OS/X / Homebrew:
 ```sh

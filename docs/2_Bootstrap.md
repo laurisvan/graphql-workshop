@@ -17,11 +17,17 @@ npm init --yes
 # the sake of simplicity
 npm install --save-dev typescript ts-node
 
+# CLI utility that we will use to copy the GraphQL schemas to build directory
+npm install --save-dev cpy-cli
+
 # Install Apollo Server and GraphQL module
 npm install --save apollo-server graphql
 
 # Sequelize dependencies
 npm install --save sequelize@5 sequelize-typescript @types/node @types/bluebird reflect-metadata
+
+# Utility library to generate UUIDs server-side
+npm install --save uuid @types/uuid
 
 # Postgres dependencies
 npm install --save pg
@@ -69,6 +75,7 @@ jq '.main = "build/index.js"' package.json | sponge package.json
 jq -r '.scripts.start = "node ."' package.json | sponge package.json
 jq -r '.scripts.watch = "nodemon --watch build --watch schema.graphql"' package.json | sponge package.json
 jq -r '.scripts.dev = "nodemon --watch build --watch schema.graphql --exec 'ts-node' ./src/index.ts"' package.json | sponge package.json
+jq -r '.scripts.copy_schemas = "cpy **/*schema.graphql ../build/ --parents --cwd=src"' package.json | sponge package.json
 jq -r '.scripts.build = "tsc -b --incremental"' package.json | sponge package.json
 jq -r '.scripts.build_watch = "tsc -b --watch"' package.json | sponge package.json
 ```

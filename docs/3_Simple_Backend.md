@@ -24,6 +24,10 @@ const typeDefs = gql\`\${schema}\`
 const resolvers = {
   Query: {
     hello: () => 'Hello, world!'
+  },
+
+  Mutation: {
+    echo: (parent, params, context, info) => `You typed ${ params.input }`
   }
 }
 
@@ -48,19 +52,22 @@ type Query {
   hello: String
 }
 
+# All mutations
+type Mutation {
+  echo (input: String!): String
+}
+
 EOF
 ```
 
 ## Run the Server
 
-The stack is now ready for running. Start the each on different shells:
+The stack is now ready for running. If you added the NPM scripts in the previous
+chapter, you should be able to start 'dev' script:
 
 ```sh
-# Rebuild on file changes (*.ts)
-npm run build_watch
-
-# Restart server on schema or build changes in a different shell
-npm run watch
+# Restarts and builds from scratch on every file change:
+npm run dev
 
 # Now the backend is responding on port 4000; also serves GraphQL Playground
 open http://localhost:4000

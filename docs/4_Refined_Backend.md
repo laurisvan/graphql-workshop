@@ -29,28 +29,27 @@ You can browse this in schema browsers
 TODO Add definitions for starts and ends when we add custom data types
 """
 type Assignment {
-  # A single-line comment (note that ! denotes non-nullable value)
+  id: ID!
+  # A single-line comment
   name: String!
   """
   Multi-line comments are supported here, as well
   """
   description: String
+  starts: DateTime!
+  ends: DateTime!
 }
 
 """
-These are the actual querys that our Assignments module provides
+In GraphQL, inputs are special types to encapsulate complex inputs
 """
-type Query {
-  """
-  Queries the assignments
-  Note how exclamation mark specifies that the return values are not nullable;
-  in GraphQL the default policy is that values are nullable, but this is a
-  matter of taste.
-
-  TODO Add query parameters to query the assignments with
-  """
-  assignments: [Assignment!]!
+input AssignmentInput {
+  name: String!
+  description: String
+  starts: DateTime!
+  ends: DateTime!
 }
+
 ```
 
 ### Bootstrap GraphQL Codegen
@@ -123,25 +122,14 @@ import fs from 'fs'
 import path from 'path'
 import { createModule, gql } from 'graphql-modules'
 
-// These are types injected from the generated schema types
-import { IResolvers, IAssignment } from '../../interfaces/schema-typings'
-
-import AssignmentProvider from './provider'
-
 const data = fs.readFileSync(path.join(__dirname, 'schema.graphql'))
 const typeDefs = gql(data.toString())
 
+// We will supply Assignment specific resolvers here later
 const resolvers: IResolvers = {
-  Query: {
-    assignments: async (parent, args, context, info): Promise<IAssignment[]> => {
-      const provider = context.injector.get(AssignmentProvider)
-
-      return provider.find()
-    }
-  }
 }
 
-export const AssignmentModule = createModule({
+export const Assignment = createModule({
   id: 'assignments',
   dirname: __dirname,
   typeDefs: typeDefs,
@@ -149,7 +137,7 @@ export const AssignmentModule = createModule({
   providers: [AssignmentProvider]
 })
 
-export default AssignmentModule
+export default Assignment
 
 ```
 
@@ -157,7 +145,7 @@ Note that `IAssignment` and `IResolvers` are generated GraphQL type definitions.
 
 ### Refine Application Bootstrap Code
 
-Append a root level GraphQL module definition directly into `src/index.ts`:
+Append our first assignment module directly into `src/index.ts`:
 
 ```typescript
 import { ApolloServer } from 'apollo-server'
@@ -414,11 +402,35 @@ import Assignment from '../../models/Assignment'
  * Note that the `Injectable` decorator makes this provider injectable.
  * DI in graphql-modules is very much like Inversify, but it has additional
  * helpers for different life-cycles (singleton, session, request).
+ *
+ * We make the injectable global, as we expect to share it across the modules
  */
-@Injectable()
+@Injectable({ global: true })
+
+import { IAssignment } from '../../interfaces/schema-typings'
+import { Injectable } from 'graphql-modules'
+import { v4 as uuidv4 } from 'uuid'
+import Assignment from '../../models/Assignment'
+
+/**
+ * This is a sample provider (just a logic wrapper) that is used as glue
+ * between the database models and queries.
+ *
+ * Note that the `Injectable` decorator makes this provider injectable.
+ * DI in graphql-modules is very much like Inversify, but it has additional
+ * helpers for different life-cycles (singleton, session, request).
+ */
+@Injectable({ global: true })
 export class AssignmentProvider {
   async find (): Promise<Assignment[]> {
     return await Assignment.findAll()
+  }
+
+  async create (input: IAssignment): Promise<Assignment> {
+    return await Assignment.create({
+      ...input,
+      id: uuidv4()
+    })
   }
 }
 
@@ -426,17 +438,22 @@ export default AssignmentProvider
 
 ```
 
-Then use the module in as part of Assignment module (`src/modules/assignment/index.ts`):
+Finally, let us define the related queries. In this workshop we define all
+queries and mutations in their own module `src/modules/operations`. This is
+contrary to best practice to keep the operations close to their related types.
+We simply do this as a technical workaround to create schemas that work both
+for graphql-codegen and graphql-modules that handle GraphQL type extensions
+differently since graphql-modules 1.0 release.
+See more [here](https://github.com/Urigo/graphql-modules/issues/1300).
 
-```typescript
+Module definition (`src/modules/operations/index.ts`)
+```typescript 
 import fs from 'fs'
 import path from 'path'
 import { createModule, gql } from 'graphql-modules'
+import AssignmentProvider from '../assignment/provider'
 
-// These are types injected from the generated schema types
 import { IResolvers, IAssignment } from '../../interfaces/schema-typings'
-
-import AssignmentProvider from './provider'
 
 const data = fs.readFileSync(path.join(__dirname, 'schema.graphql'))
 const typeDefs = gql(data.toString())
@@ -448,18 +465,76 @@ const resolvers: IResolvers = {
 
       return provider.find()
     }
+  },
+  Mutation: {
+    createAssignment: async (parent, { input }, context, info): Promise<IAssignment> => {
+      const provider = context.injector.get(AssignmentProvider)
+
+      return provider.create(input)
+    }
   }
 }
 
-export const Assignment = createModule({
-  id: 'assignments',
+export const OperationsModule = createModule({
+  id: 'operations',
   dirname: __dirname,
   typeDefs: typeDefs,
-  resolvers,
-  providers: [AssignmentProvider]
+  resolvers
 })
 
-export default Assignment
+export default OperationsModule
+
+```
+
+Module schema definition (`src/modules/operations/schema.graphql`):
+
+```graphql
+type Query {
+  assignments: [Assignment!]!
+}
+
+type Mutation {
+  createAssignment(input: AssignmentInput): Assignment!
+}
+```
+
+Finally add the new module into your application bootstrap (`src/index.ts`).
+In the end of the chapter, it should look as follows:
+
+```typescript
+import { ApolloServer } from 'apollo-server'
+import { createApplication } from 'graphql-modules'
+import AssignmentModule from './modules/assignment'
+import OperationsModule from './modules/operations'
+
+import Database from './models/Database'
+
+async function start (): Promise<void> {
+  // Initialize GraphQL modules
+  const application = createApplication({
+    modules: [
+      AssignmentModule,
+      OperationsModule
+    ]
+  })
+
+  // This is the aggregated schema
+  const schema = application.createSchemaForApollo()
+
+  // Initialize database. Sequelize creates tables on bootstrapping
+  const db = Database.instance
+  await db.init()
+
+  // Start the server
+  const server = new ApolloServer({
+    schema
+  })
+  const { url } = await server.listen()
+  console.log(`🚀 Server ready at ${url}`)
+}
+
+// eslint-disable-next-line @typescript-eslint/no-floating-promises
+start()
 
 ```
 
