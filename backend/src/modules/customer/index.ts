@@ -3,7 +3,7 @@ import path from 'path'
 import { createModule, gql } from 'graphql-modules'
 
 // These are types injected from the generated schema types
-import { IResolvers, ICustomer } from '../../interfaces/schema-typings'
+import { ICustomer, IResolvers } from '../../interfaces/schema-typings'
 
 import CustomerProvider from './provider'
 
@@ -18,6 +18,20 @@ const resolvers: IResolvers = {
       const provider = context.injector.get(CustomerProvider)
 
       return provider.findById(assignment.recipientId)
+    }
+  },
+  Query: {
+    customers: async (parent, args, context, info): Promise<ICustomer[]> => {
+      const provider = context.injector.get(CustomerProvider)
+
+      return provider.find()
+    },
+  },
+  Mutation: {
+    createCustomer: async (parent, { input }, context, info): Promise<ICustomer> => {
+      const provider = context.injector.get(CustomerProvider)
+
+      return provider.create(input)
     }
   }
 }

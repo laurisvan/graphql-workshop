@@ -6,3 +6,11 @@ type Person {
 input PersonInput {
   name: String!
 }
+
+extend type Query {
+  persons: [Person!]!
+}
+
+extend type Mutation {
+  createPerson(input: PersonInput): Person!
+}

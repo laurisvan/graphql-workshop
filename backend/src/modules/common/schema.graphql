@@ -1,3 +1,7 @@
 # We need to declare the scalars we aim to use in schema
 scalar DateTime
 scalar ID
+
+type Query
+
+type Mutation

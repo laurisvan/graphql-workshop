@@ -12,3 +12,11 @@ input CustomerInput {
 extend type Assignment {
   recipient: Customer
 }
+
+extend type Query {
+  customers: [Customer!]!
+}
+
+extend type Mutation {
+  createCustomer(input: CustomerInput): Customer!
+}
