@@ -433,22 +433,17 @@ export default AssignmentProvider
 
 ```
 
-Finally, let us define the related queries. In this workshop we define all
-queries and mutations in their own module `src/modules/operations`. This is
-contrary to best practice to keep the operations close to their related types.
-We simply do this as a technical workaround to create schemas that work both
-for graphql-codegen and graphql-modules that handle GraphQL type extensions
-differently since graphql-modules 1.0 release.
-See more [here](https://github.com/Urigo/graphql-modules/issues/1300).
+Finally, let us define the related queries and mutations(`src/modules/assignments/index.ts`):
 
-Module definition (`src/modules/operations/index.ts`)
-```typescript 
+```typescript
 import fs from 'fs'
 import path from 'path'
 import { createModule, gql } from 'graphql-modules'
-import AssignmentProvider from '../assignment/provider'
 
-import { IResolvers, IAssignment } from '../../interfaces/schema-typings'
+// These are types injected from the generated schema types
+import { IAssignment, IResolvers } from '../../interfaces/schema-typings'
+
+import AssignmentProvider from './provider'
 
 const data = fs.readFileSync(path.join(__dirname, 'schema.graphql'))
 const typeDefs = gql(data.toString())
@@ -470,25 +465,63 @@ const resolvers: IResolvers = {
   }
 }
 
-export const OperationsModule = createModule({
-  id: 'operations',
+export const AssignmentModule = createModule({
+  id: 'assignments',
   dirname: __dirname,
   typeDefs: typeDefs,
-  resolvers
+  resolvers,
+  providers: [AssignmentProvider]
 })
 
-export default OperationsModule
+export default AssignmentModule
 
 ```
 
-Module schema definition (`src/modules/operations/schema.graphql`):
+Module schema definition (`src/modules/assignment/schema.graphql`):
+
+**TODO Create stub 'common' module to define Query and Mutation types**
+
+Module schema definition (`src/modules/assignment/schema.graphql`):
 
 ```graphql
-type Query {
+"""
+This is a sample GraphQL multi-line comment. GraphQL supports simple API
+documentation as part of the schema definition. This is actually enough for
+all needs I have encountered this far.
+
+You can browse this in schema browsers
+
+TODO Add definitions for starts and ends when we add custom data types
+"""
+type Assignment {
+  id: ID!
+  recipientId: ID
+
+  # A single-line comment
+  name: String!
+  """
+  Multi-line comments are supported here, as well
+  """
+  description: String
+  starts: DateTime!
+  ends: DateTime!
+}
+
+"""
+In GraphQL, inputs are special types to encapsulate complex inputs
+"""
+input AssignmentInput {
+  name: String!
+  description: String
+  starts: DateTime!
+  ends: DateTime!
+}
+
+extend type Query {
   assignments: [Assignment!]!
 }
 
-type Mutation {
+extend type Mutation {
   createAssignment(input: AssignmentInput): Assignment!
 }
 ```

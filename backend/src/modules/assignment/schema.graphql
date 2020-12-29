@@ -30,3 +30,11 @@ input AssignmentInput {
   starts: DateTime!
   ends: DateTime!
 }
+
+extend type Query {
+  assignments: [Assignment!]!
+}
+
+extend type Mutation {
+  createAssignment(input: AssignmentInput): Assignment!
+}

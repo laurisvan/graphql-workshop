@@ -43,18 +43,6 @@ export type IAssignmentInput = {
   ends: Scalars['DateTime'];
 };
 
-
-export type ICustomer = {
-  __typename?: 'Customer';
-  id: Scalars['ID'];
-  name: Scalars['String'];
-};
-
-export type ICustomerInput = {
-  name: Scalars['String'];
-  description?: Maybe<Scalars['String']>;
-};
-
 export type IQuery = {
   __typename?: 'Query';
   assignments: Array<IAssignment>;
@@ -82,6 +70,18 @@ export type IMutationCreateCustomerArgs = {
 
 export type IMutationCreatePersonArgs = {
   input?: Maybe<IPersonInput>;
+};
+
+
+export type ICustomer = {
+  __typename?: 'Customer';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+};
+
+export type ICustomerInput = {
+  name: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
 };
 
 export type IPerson = {
@@ -175,12 +175,12 @@ export type IResolversTypes = {
   Assignment: ResolverTypeWrapper<IAssignment>;
   String: ResolverTypeWrapper<Scalars['String']>;
   AssignmentInput: IAssignmentInput;
+  Query: ResolverTypeWrapper<{}>;
+  Mutation: ResolverTypeWrapper<{}>;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']>;
   ID: ResolverTypeWrapper<Scalars['ID']>;
   Customer: ResolverTypeWrapper<ICustomer>;
   CustomerInput: ICustomerInput;
-  Query: ResolverTypeWrapper<{}>;
-  Mutation: ResolverTypeWrapper<{}>;
   Person: ResolverTypeWrapper<IPerson>;
   PersonInput: IPersonInput;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
@@ -191,12 +191,12 @@ export type IResolversParentTypes = {
   Assignment: IAssignment;
   String: Scalars['String'];
   AssignmentInput: IAssignmentInput;
+  Query: {};
+  Mutation: {};
   DateTime: Scalars['DateTime'];
   ID: Scalars['ID'];
   Customer: ICustomer;
   CustomerInput: ICustomerInput;
-  Query: {};
-  Mutation: {};
   Person: IPerson;
   PersonInput: IPersonInput;
   Boolean: Scalars['Boolean'];
@@ -213,16 +213,6 @@ export type IAssignmentResolvers<ContextType = any, ParentType extends IResolver
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export interface IDateTimeScalarConfig extends GraphQLScalarTypeConfig<IResolversTypes['DateTime'], any> {
-  name: 'DateTime';
-}
-
-export type ICustomerResolvers<ContextType = any, ParentType extends IResolversParentTypes['Customer'] = IResolversParentTypes['Customer']> = {
-  id?: Resolver<IResolversTypes['ID'], ParentType, ContextType>;
-  name?: Resolver<IResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
 export type IQueryResolvers<ContextType = any, ParentType extends IResolversParentTypes['Query'] = IResolversParentTypes['Query']> = {
   assignments?: Resolver<Array<IResolversTypes['Assignment']>, ParentType, ContextType>;
   customers?: Resolver<Array<IResolversTypes['Customer']>, ParentType, ContextType>;
@@ -235,6 +225,16 @@ export type IMutationResolvers<ContextType = any, ParentType extends IResolversP
   createPerson?: Resolver<IResolversTypes['Person'], ParentType, ContextType, RequireFields<IMutationCreatePersonArgs, never>>;
 };
 
+export interface IDateTimeScalarConfig extends GraphQLScalarTypeConfig<IResolversTypes['DateTime'], any> {
+  name: 'DateTime';
+}
+
+export type ICustomerResolvers<ContextType = any, ParentType extends IResolversParentTypes['Customer'] = IResolversParentTypes['Customer']> = {
+  id?: Resolver<IResolversTypes['ID'], ParentType, ContextType>;
+  name?: Resolver<IResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type IPersonResolvers<ContextType = any, ParentType extends IResolversParentTypes['Person'] = IResolversParentTypes['Person']> = {
   id?: Resolver<IResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<IResolversTypes['String'], ParentType, ContextType>;
@@ -243,10 +243,10 @@ export type IPersonResolvers<ContextType = any, ParentType extends IResolversPar
 
 export type IResolvers<ContextType = any> = {
   Assignment?: IAssignmentResolvers<ContextType>;
-  DateTime?: GraphQLScalarType;
-  Customer?: ICustomerResolvers<ContextType>;
   Query?: IQueryResolvers<ContextType>;
   Mutation?: IMutationResolvers<ContextType>;
+  DateTime?: GraphQLScalarType;
+  Customer?: ICustomerResolvers<ContextType>;
   Person?: IPersonResolvers<ContextType>;
 };
 

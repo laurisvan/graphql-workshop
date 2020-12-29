@@ -43,18 +43,6 @@ export type IAssignmentInput = {
   ends: Scalars['DateTime'];
 };
 
-
-export type ICustomer = {
-  __typename?: 'Customer';
-  id: Scalars['ID'];
-  name: Scalars['String'];
-};
-
-export type ICustomerInput = {
-  name: Scalars['String'];
-  description?: Maybe<Scalars['String']>;
-};
-
 export type IQuery = {
   __typename?: 'Query';
   assignments: Array<IAssignment>;
@@ -82,6 +70,18 @@ export type IMutationCreateCustomerArgs = {
 
 export type IMutationCreatePersonArgs = {
   input?: Maybe<IPersonInput>;
+};
+
+
+export type ICustomer = {
+  __typename?: 'Customer';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+};
+
+export type ICustomerInput = {
+  name: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
 };
 
 export type IPerson = {

@@ -290,7 +290,6 @@ import { createApplication } from 'graphql-modules'
 import AssignmentModule from './modules/assignment'
 import CommonModule from './modules/common'
 import CustomerModule from './modules/customer'
-import OperationsModule from './modules/operations'
 import PersonModule from './modules/person'
 
 import Database from './models/Database'
@@ -302,7 +301,6 @@ async function start (): Promise<void> {
       AssignmentModule,
       CustomerModule,
       CommonModule,
-      OperationsModule,
       PersonModule
     ]
   })
